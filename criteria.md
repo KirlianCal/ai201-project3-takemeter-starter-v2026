@@ -51,63 +51,43 @@ whether you hit them:
 
 ---
 
-## 1.
+## 1. Overall accuracy
 
-<!-- Your criterion. It must name a number. -->
+The trained model achieves an overall accuracy of at least 0.70 on the held-out test set for all three seeds (42, 7, and 2024).
 
-
-
-**Why this target:**
-
-
+**Why this target:** There are three separate labels, so a uniform random guesser would get ~33% accuracy. A 70% target requires the model to learn patterns in how VWVortex members ask for help, share experiences, and explain repairs, while allowing for informal language and some overlapping post purposes.
 
 ---
 
-## 2.
+## 2. Per-label performance
 
-<!-- Your criterion. -->
+Each of the three labels achieves an F1 score of at least 0.55 on the held-out test set for all three seeds.
 
-
-
-**Why this target:**
-
-
+**Why this target:** The `experience` and `how_to` labels can overlap when someone describes a modification and explains how they completed it. The `help_request` label can also be difficult to distinguish from posts that describe a problem without directly asking a question. A 0.55 minimum gives every label a meaningful performance floor without assuming that all three will be equally easy to learn.
 
 ---
 
-## 3.
+## 3. Balance
 
-<!-- Your criterion. -->
+No label accounts for more than 65% of the final labelled dataset.
 
-
-
-**Why this target:**
-
-
+**Why this target:** In my reading of the MK6 subforum, most threads are people asking questions, so I expect `help_request` to be the largest label if I collect without steering. If most examples are `help_request`, the model could learn to favour questions and perform poorly on posts describing modifications or providing instructions. Each label needs enough examples for the model to learn its own patterns rather than rely on the most common class.
 
 ---
 
-## 4.
+## 4. Consistency across training seeds
 
-<!-- Your criterion. -->
+The difference between the highest and lowest overall accuracy across seeds 42, 7, and 2024 must be no greater than 0.10.
 
-
-
-**Why this target:**
-
-
+**Why this target:** The model is trained on a relatively small, specialised dataset of VWVortex posts, so changing the seed may affect which examples it learns from and how well it generalises. A maximum spread of 10 percentage points is a practical tolerance for this small dataset while still requiring reasonably stable results.
 
 ---
 
-## 5.
+## 5. Confidence
 
-<!-- Your criterion. -->
+Among test-set predictions made with a confidence of at least 0.80, at least 80% must be correct for each seed. Confidence means the model's highest predicted class probability for a post. If a seed has fewer than 5 test predictions at or above 0.80, that seed has no verdict for this criterion and counts as missed.
 
-
-
-**Why this target:**
-
-
+**Why this target:** Forum posts sometimes mix personal experience with repair instructions, making a confident prediction potentially misleading when a post crosses the `experience`/`how_to` boundary. Requiring at least 80% accuracy among high-confidence predictions would make confidence scores more useful when deciding which classifications can be accepted automatically and which posts need human review.
 
 ---
 
