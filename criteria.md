@@ -55,15 +55,15 @@ whether you hit them:
 
 The trained model achieves an overall accuracy of at least 0.70 on the held-out test set for all three seeds (42, 7, and 2024).
 
-**Why this target:** There are three separate labels, so a uniform random guesser would get ~33% accuracy. A 70% target requires the model to learn patterns in how VWVortex members ask for help, share experiences, and explain repairs, while allowing for informal language and some overlapping post purposes.
+**Why this target:** There are four separate labels, so a uniform random guesser would get ~25% accuracy. A 70% target requires the model to learn patterns in how VWVortex members ask for help, share experiences, explain repairs, and advertise parts for sale, while allowing for informal language and some overlapping post purposes.
 
 ---
 
 ## 2. Per-label performance
 
-Each of the three labels achieves an F1 score of at least 0.55 on the held-out test set for all three seeds.
+Each of the four labels achieves an F1 score of at least 0.55 on the held-out test set for all three seeds.
 
-**Why this target:** The `experience` and `how_to` labels can overlap when someone describes a modification and explains how they completed it. The `help_request` label can also be difficult to distinguish from posts that describe a problem without directly asking a question. A 0.55 minimum gives every label a meaningful performance floor without assuming that all three will be equally easy to learn.
+**Why this target:** The `experience` and `how_to` labels can overlap when someone describes a modification and explains how they completed it. The `help_request` label can also be difficult to distinguish from posts that describe a problem without directly asking a question. `for_sale` is my smallest label (about 20 posts, so only a few in the test split), so its score will jump between seeds. A 0.55 minimum gives every label a meaningful performance floor without assuming that all four will be equally easy to learn.
 
 ---
 
@@ -71,7 +71,7 @@ Each of the three labels achieves an F1 score of at least 0.55 on the held-out t
 
 No label accounts for more than 65% of the final labelled dataset.
 
-**Why this target:** In my reading of the MK6 subforum, most threads are people asking questions, so I expect `help_request` to be the largest label if I collect without steering. If most examples are `help_request`, the model could learn to favour questions and perform poorly on posts describing modifications or providing instructions. Each label needs enough examples for the model to learn its own patterns rather than rely on the most common class.
+**Why this target:** In my reading of the MK6 subforum, most threads are people asking questions, so I expect `help_request` to be the largest label if I collect without steering. If most examples are `help_request`, the model could learn to favour questions and perform poorly on posts describing modifications, providing instructions, or advertising items for sale. Each label needs enough examples for the model to learn its own patterns rather than rely on the most common class.
 
 ---
 

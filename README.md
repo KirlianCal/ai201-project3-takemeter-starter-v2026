@@ -72,7 +72,7 @@ The author asks the community for an answer or diagnosis they don't have, whethe
 ### `experience`
 
 **Definition:**
-The author shares how they felt about something they installed, changed, or bought, such as being satisfied, regretting it, or finding it easy or annoying, without asking for help or giving instructions.
+The author shares how they felt about, or what happened with, their vehicle or something they installed, changed, or bought for it, such as being satisfied, regretting it, or finding it easy or annoying, without asking for help or giving instructions.
 
 **Example 1:**
 > Just did the climatronic retrofit on my MK6 GTI. Everything works except Dual zone. Very easy to do, shouldn't take more than a few hours.
@@ -105,9 +105,19 @@ The author gives instructions a reader could follow to install, replace, adjust,
 2. Otherwise, if it contains instructions a reader could follow, it's `how_to`, even if the author also says how they felt.
 3. Otherwise, if it mostly shares how the author felt about the product or job, it's `experience`.
 
+### `for_sale`
+
+**Definition:**
+The author is advertising a product they are selling.
+
+**Example 1:**
+> FOR SALE -INJEN Air intake off my 2012 Golf 2.5L. I have the complete Injen intake off my 2012 Golf 2.5l installed in 2015. Original Box, instructions, filter/water cover and all the clamps/bolts needed. ... $150.00 I can ship ground for an additional $10.00.
+
+**Example 2:**
+> Garage Clean-out Free Parts in MA. All from a 2012 Golf TDI 4Dr; cleaning out my garage. Local pickup only, absolutely no shipping! ... Brand new Curt tow hitch with ball mount and ball ...
+
 <!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
      if the tone is heated." -->
-
 
 
 ---
