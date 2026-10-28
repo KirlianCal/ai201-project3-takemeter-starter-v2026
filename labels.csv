@@ -1,0 +1,52 @@
+text,label,note
+"Hi Guys Mk6 TDi WVWZZZ1KZAP085651
+would someone be so kind as to confirm the coolant capacity.
+I had a look at it the other day and it looked a bit murky. apparently it is a long life product and when getting my MOT done the Garage said Specific Gravity was OK despite me asking them to change it with fresh stuff.
+Could anyone point me in the direction of ready to go G12 evo (as opposed to the concentrate) I am a bit concerned about getting an air pocket, are the vacuum bleeders worth buying?
+My haynes manual gives a capacity of 5.6 Lt but that's for a 1.4 engine
+Kindest Regards Mike","help_request","Asks for coolant capacity, coolant recommendations, and advice about air pockets"
+"Just did the climatronic retrofit on my MK6 GTI. Everything works except Dual zone. Very easy to do, shouldn't take more than a few hours.
+
+This is the kit I purchased to do it: https://item.taobao.com/item.htm?sp...m/item.htm?spm=a1z10.5-c-s.w4002-17453578855.34.417a68c67ykCn6&id=562329903907#
+
+If anyone has questions feel free to ask","experience","Shares firsthand retrofit experience and reports what works"
+"Some of us decided to take the cheaper route when purchasing our MK6s and ended up with halogens. I as well as others regret that decision and are searching for opportunities to ditch the halogens for OEM xenons. I did this conversion but left out the cornering and auto leveling geature to save about $2k.
+
+Needed to complete the swap:
+-OEM xenon housings
+-Ballasts
+-Bulbs
+-Xenon pin adapter harness (OEM+, Kufatec or ECS tuning)
+-VCDS (vagcom)
+-Highline CECM*
+
+*In order to have functional LEDs with the oem setup you will need to purchase a highline CECM if yours ends in anything other than 087.
+
+Start with removing the grille, (4) screws at the top and gently remove each of the tabs at the bottom of the grille. With the grille removed you have access to the (2) screws holding the bumper in place. You will also need to remove (5) screws from each side of the fenders from the top of the bumper down to the bottom. Next, dependin on whether or not you have the votex spoiler installed you will need to remove the screws holding the bottom of the bumper in place which can range from (8-14) I believe. With all the mounting points removed, pull the bumper away from the car. I just removed it and placed it on a towel in front of the car. You will then remove the (3) screws holding each headlight in place. After removing the headlight harness from the backside of the headlight you should be able to pull the factory halogens out of the bumper.
+
+Install the xenon headlights and screw them back into place. Make sure the (2) tabs at the bottom of the headlights as well as the track sysyem that lines them up with the bumper. With the headlight plug adapter harness, you will plug the female end into the factory wiring and the male end into the xenon headlights. I have an APR intake so I tucked the harness just above the radiator and ziptied it in place to make sure it wasn't in the way of the fan or radiator. After that, just install everything in reversal of removal.
+
+Before firing up the car you will need to do a little coding:
+
+Enjoy!
+
+Disclaimer: These are the steps I followed when converting the halogens on my 2011 GTI to non-LED xenon headlights. I am not responsible for any damage you may occur during this conversion.
+
+For those looking to make their xenons and high beams work with a mid line CECM and non-LED headlights, follow the following steps from page 9 & 10:
+
+You will need to go to Central Electronics with VAGCOM, go to byte 17 and uncheck bit 2.
+
+As requested, provided by a member from Page 9 is the pinout:
+
+I don't have wire colors, just do one at a time
+Halogen Pin -> Xenon Pin
+1 -> 4
+4 -> 12
+5 -> 5 & 7 (additional ground to 7)
+6 -> 6
+8 -> 11 (high beams)
+9 -> 9
+10 -> 10","how_to","Provides a parts list and step-by-step instructions for a halogen-to-xenon conversion"
+" I am experiencing low voltage on My HPFP on my 2010 MK6 CBFA, I tested voltage and I am at 2.8 volts on the connector with key on and with the car running (red wire) along with 2.8 volts on pin 15 of the ecu. I have tried swapping fuse 23, j757 and putting on a new connector with no luck, any suggestions on what to check next would be greatly appreciated. Picture of fuse box attached below as well.
+
+Background info, 02Q swapped DSG car, stratified protune, halogen swapped bixenon car.","help_request","Asks for troubleshooting advice about low HPFP voltage after trying several fixes"

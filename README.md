@@ -42,7 +42,7 @@
 <!-- Your community, and what your classifier sorts posts into. Three or four
      sentences. -->
 
-
+This project classifies posts from the VWVortex MK6 Golf/GTI subforum (public, readable without a login). TakeMeter sorts each post by what it is doing: asking for help, reporting something the author did, or giving instructions for others to follow. The draft labels are `help_request`, `experience`, and `how_to`, and they may change after Milestone 2.
 
 ---
 
@@ -54,31 +54,57 @@
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+### `help_request`
 
 **Definition:**
+The author asks the community for an answer or diagnosis they don't have, whether it's a single fact or the cause of a problem described through symptoms.
 
 **Example 1:**
->
+> Hi Guys Mk6 TDi [VIN removed]
+> would someone be so kind as to confirm the coolant capacity.
+> [...]
+> My haynes manual gives a capacity of 5.6 Lt but that's for a 1.4 engine
+> Kindest Regards Mike
 
 **Example 2:**
->
+> I am experiencing low voltage on My HPFP on my 2010 MK6 CBFA, I tested voltage and I am at 2.8 volts on the connector [...] I have tried swapping fuse 23, j757 and putting on a new connector with no luck, any suggestions on what to check next would be greatly appreciated.
 
-### `label_two`
+### `experience`
 
 **Definition:**
+The author shares how they felt about something they installed, changed, or bought, such as being satisfied, regretting it, or finding it easy or annoying, without asking for help or giving instructions.
 
 **Example 1:**
->
+> Just did the climatronic retrofit on my MK6 GTI. Everything works except Dual zone. Very easy to do, shouldn't take more than a few hours.
 
 **Example 2:**
->
+> Shifting into third i was blown away with the improvement. [...] I just wish that the gti came like this from the factory. Ill report back with extended driving impressions.
+
+### `how_to`
+
+**Definition:**
+The author gives instructions a reader could follow to install, replace, adjust, or fix something, whether that's a full step list or a single specific adjustment.
+
+**Example 1:**
+> Needed to complete the swap:
+> -OEM xenon housings
+> -Ballasts
+> -Bulbs
+> [...]
+> Start with removing the grille, (4) screws at the top and gently remove each of the tabs at the bottom of the grille.
+
+**Example 2:**
+> The only adjustment I could find was a white hex adjuster on the topside of each light. [...] Turning this gold screw counter clockwise will raise the beam higher.
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `experience` and `how_to`
 
 **The decision rule I used every time:**
+1. If the post's main purpose is to get an answer or opinion from others, it's `help_request`, even if it also describes what the author did.
+2. Otherwise, if it contains instructions a reader could follow, it's `how_to`, even if the author also says how they felt.
+3. Otherwise, if it mostly shares how the author felt about the product or job, it's `experience`.
+
 <!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
      if the tone is heated." -->
 
@@ -137,17 +163,15 @@ Say so plainly — the disclosure is required, not penalised. -->
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** TODO — read it from section 2 of `takemeter.ipynb`
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, 128 tokens per post, seed TODO (check section 2 of the notebook). Update this line if I change any of them.
 
-**Anything I changed from the defaults, and why:**
+**Hardware:** CPU only (PyTorch 2.14.1+cpu), Python 3.13.7 on Windows, 15.6 GB RAM
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+**Anything I changed from the defaults, and why:** TODO after Milestone 5 (or "Nothing")
 
-
+**Split sizes:** TODO after running section 3 of the notebook — train / val / test, plus per-label counts in the test split. If a label had fewer than about 8 in test, say so.
 
 ---
 
