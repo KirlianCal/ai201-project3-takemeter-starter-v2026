@@ -240,34 +240,30 @@ Both models were scored on the same 23 held-out posts (`test_split.csv`, seed 42
 
 ## Run Log — Before
 
-<!-- Five criteria across three seeds. The notebook's section 6 prints the
-     spread table; the Target and Verdict columns are yours. -->
+Three seeds (42, 7, 2024), CPU, PyTorch 2.14.1+cpu, base model `distilbert-base-uncased`, 3 epochs, learning rate 2e-5, batch size 16, 128 tokens. Results saved in `results_three_seeds_before.json`.
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.70 on every seed | 0.609 | 0.609 | 0.609 | MISSED |
+| 2. Per-label F1 | ≥ 0.55 for all four labels, every seed | lowest 0.000 | lowest 0.000 | lowest 0.000 | MISSED |
+| 3. Balance | no label > 65% of the dataset | 59.9% (`help_request`) | 59.9% | 59.9% | MET |
+| 4. Seed consistency | accuracy spread ≤ 0.10 | 0.609 | 0.609 | 0.609 (spread 0.000) | MET (but see Verdicts) |
+| 5. Confidence | ≥ 80% correct among predictions with confidence ≥ 0.80, at least 5 such predictions per seed | 0 such predictions (max confidence 0.584) | 0 (max 0.469) | 0 (max 0.509) | MISSED |
+
+Per-label F1 on each of the three seeds was identical: `help_request` 0.757, `experience` 0.000, `how_to` 0.000, `for_sale` 0.000. Macro F1 was 0.189 on every seed.
 
 ### Confusion matrix
 
-<!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
-     An image of a matrix earns nothing. -->
+Seed 42 test split (23 posts). Rows are true labels, columns are the model's guesses.
 
-| true \ predicted |  |  |  |
-|---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+| true \ predicted | help_request | experience | how_to | for_sale |
+|---|---|---|---|---|
+| **help_request** | 14 | 0 | 0 | 0 |
+| **experience** | 4 | 0 | 0 | 0 |
+| **how_to** | 2 | 0 | 0 | 0 |
+| **for_sale** | 3 | 0 | 0 | 0 |
 
-**My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
-
-
+**My biggest off-diagonal number, and what it means:** The largest single cell is 4 real `experience` posts called `help_request`, with 0 going the other way. But that's partly an accident of counts: every post that isn't `help_request` (4 `experience`, 2 `how_to`, 3 `for_sale`, 9 in all) was called `help_request`. The model never predicted any other label, on any of the three seeds. So the boundary it failed to learn is not one pair but all of them: it learned the majority label (60% of the data) and nothing else. Training loss was still falling at epoch 3 (about 1.28 to 1.09), which suggests it is undertrained as well as short of data.
 
 ---
 
