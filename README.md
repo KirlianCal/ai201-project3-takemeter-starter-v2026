@@ -269,61 +269,37 @@ Seed 42 test split (23 posts). Rows are true labels, columns are the model's gue
 
 ## Verdicts and Diagnoses
 
-<!-- MET or MISSED against LAST UNIT's target. The target has to hold across
-     all three seeds, not turn up sometimes. -->
-
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | ≥ 0.70 on all three seeds | MISSED | 0.609 on seeds 42, 7 and 2024. Below 0.70 on every seed. |
+| 2 | Per-label F1 | ≥ 0.55 for all four labels on all three seeds | MISSED | `help_request` 0.757, but `experience`, `how_to` and `for_sale` were 0.000 on every seed. |
+| 3 | Balance | No label above 65% of the dataset | MET | Largest label is `help_request` at 91/152 = 59.9%. This is a property of the data file, so it is the same on every seed. |
+| 4 | Seed consistency | Accuracy spread ≤ 0.10 across seeds | MET (vacuously) | Spread was 0.000, so the target is met as written. But it is met only because the model gave the identical answer, "always `help_request`", on every seed. It is not evidence that the model is stable in any useful sense. |
+| 5 | Confidence | ≥ 80% correct among predictions with confidence ≥ 0.80, with at least 5 such predictions per seed | MISSED | Zero predictions reached 0.80 on any seed (highest confidence 0.584, 0.469, 0.509). By my own rule, a seed with fewer than 5 such predictions has no verdict and counts as missed. |
 
 **Diagnoses**
 
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
+**Criteria 1 and 2** The model predicts `help_request` for every post. The confusion matrix shows all 9 non-`help_request` test posts landing in `help_request`, and the result is identical on all three seeds. Accuracy of 0.609 is exactly the share of `help_request` in the test split (14/23). Likely cause is a combination of too few examples and too little training: the minority labels had only 11 to 18 training examples each, and with 106 training rows, batch size 16 and 3 epochs the model made only about 21 updates. Training loss was still falling at epoch 3 (about 1.28 to 1.09), so it had not finished learning. I know this from the matrix, the identical-seed result and the loss curve.
 
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
+**What my agreement report can and can't tell me.** I matched the staff labels on 30 of 30 posts.  But that check used the staff taxonomy on a different forum, not my own four labels on my own 152 rows, so it does not rule out noisy labels at my `experience`/`how_to` or `help_request`/`experience` boundaries. The matrix can't settle it either, because the model never learned anything beyond the majority label. So my most supported diagnosis is "undertrained on too little data", and a labeling problem remains untested. One more piece of evidence: the zero-shot baseline, which saw none of my posts, got F1 0.800 on `how_to` and 0.400 on `for_sale`, so at least some of my distinctions are learnable from the definitions. With only 2 and 3 test posts on those labels this is weak evidence.
 
+**Criterion 5 (confidence): same cause.** The model never learned to separate the labels, so its probabilities stayed close to the class frequencies. No prediction cleared 0.80, so this criterion could not be tested.
 
+**Criterion 4 (consistency):** met as written, but I am not counting it as a real success. It says only that a model that always guesses the same label is consistent.
 
 ---
 
 ## Agreement Report
 
-<!-- Your rate against the staff set, and every disagreement adjudicated.
+**Agreement rate:** 30 / 30 = 100%
 
-     Remember you labelled these 30 under the STAFF taxonomy in
-     data/staff_taxonomy.md, not your own — so every argument below is made
-     from those definitions and those decision rules. -->
-
-**Agreement rate:** ___ / 30 = ___%
-
-<!-- Nobody grades this number. A 60% who argues every disagreement from the
-     stated rules beats a 95% who wrote "staff was right" nine times. Several
-     of the 30 were chosen because they're genuinely ambiguous — you should be
-     winning some of these. -->
+**How I labeled the 30 posts:** I labeled them according to the staff taxonomy in `data/staff_taxonomy.md` (`analysis`, `hot_take`, `reaction`) and saved them as `my_staff_labels.csv` before asking my TF for `staff_labels.csv`. I noticed the posts fell into three blocks of ten, and I also checked each post against the staff rules. Because I saw the pattern, my 100% agreement may partly reflect the order of the set and not only my application of the rules.
 
 **Disagreements**
 
-<!-- Three lines each: the post, both labels, and who you think is right and
-     why — grounded in the staff definitions you were both applying.
+There were none, so there is nothing to sort into piles (a), (b) or (c).
 
-     Then sort each into one of three piles:
-       (a) the rule covered it and I applied it loosely → a consistency problem
-       (b) the rule genuinely doesn't say               → a gap in the definitions
-       (c) the rule is ambiguous here and my reading is defensible → argue it.
-           This is a legitimate win.
-
-     Pile (a) is the one that matters most for your diagnosis: if you applied a
-     written rule two different ways on 30 posts, that is direct evidence about
-     what you did across your own 200. -->
+**What the pattern in my disagreements tells me:** With 30 out of 30 there is no pattern of disagreement to read. That may mean the staff rules are tight enough to apply the same way, or that this set was easier than advertised. This check used the staff taxonomy on a fictional running forum, so it tells me I can apply a written rule I did not write. It says nothing direct about whether I applied my own four labels consistently across my 152 VWVortex rows, and my own `experience`/`how_to` and `help_request`/`experience` boundaries remain untested.
 
 **1.**
 > *The post:*
