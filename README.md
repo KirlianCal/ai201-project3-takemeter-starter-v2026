@@ -216,22 +216,25 @@ Three labels have fewer than 8 examples in the test split (`experience` 4, `how_
 <!-- Both models on the same posts. `python baseline.py --trained results.json`
      prints this table for you. -->
 
+Both models were scored on the same 23 held-out posts (`test_split.csv`, seed 42). The baseline is `facebook/bart-large-mnli`, zero-shot, using my definitions from `label_definitions.txt`.
+
 | Measure | Baseline | Trained | Difference |
 |---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+| Overall accuracy | 0.565 | 0.609 | +0.043 |
+| Macro F1 | 0.482 | 0.189 | -0.293 |
+| F1 — `experience` | 0.000 | 0.000 | +0.000 |
+| F1 — `for_sale` | 0.400 | 0.000 | -0.400 |
+| F1 — `help_request` | 0.727 | 0.757 | +0.029 |
+| F1 — `how_to` | 0.800 | 0.000 | -0.800 |
 
-**What I predicted before I looked:**
+**What I predicted before I looked:** Before running the baseline, I predicted that my trained model would come very close to the baseline but not beat it. I made this prediction after seeing my own trained results (accuracy 0.609, macro F1 0.189, mostly guessing `help_request`), but before seeing any baseline numbers.
+
 <!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
      prediction made afterwards isn't one. -->
 
-**What the gap actually means:**
+**What the gap actually means:** On accuracy the two are nearly tied: the trained model is 14/23 and the baseline is 13/23, a difference of one post, which on 23 posts is within noise. My prediction was right that they'd be close, but the trained model edged ahead by one post. On macro F1 the baseline is far ahead (0.482 vs 0.189). The trained model's accuracy comes almost entirely from `help_request`, which is about 60% of my data, and it scored 0.000 on the other three labels. The baseline did the opposite. It got `how_to` right (F1 0.800, on only 2 posts) but over-predicted `for_sale`: it called 12 posts `for_sale` and only 3 were, including all four `experience` posts and several plain questions. So for my data, fine-tuning on 106 examples added almost nothing over a general model reading my definitions, and it lost on the labels that matter least in volume. The test split is also too small (`experience` 4, `how_to` 2, `for_sale` 3) for any of these per-label numbers to be reliable.
 <!-- If the baseline matched your trained model, your fine-tuning added
      nothing — and that is a real finding, not a failure. Say it plainly. -->
-
-
 
 ---
 
