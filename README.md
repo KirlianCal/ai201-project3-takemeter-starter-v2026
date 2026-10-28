@@ -301,27 +301,6 @@ There were none, so there is nothing to sort into piles (a), (b) or (c).
 
 **What the pattern in my disagreements tells me:** With 30 out of 30 there is no pattern of disagreement to read. That may mean the staff rules are tight enough to apply the same way, or that this set was easier than advertised. This check used the staff taxonomy on a fictional running forum, so it tells me I can apply a written rule I did not write. It says nothing direct about whether I applied my own four labels consistently across my 152 VWVortex rows, and my own `experience`/`how_to` and `help_request`/`experience` boundaries remain untested.
 
-**1.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
-
-**2.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
-
-**What the pattern in my disagreements tells me:**
-
-
 
 ---
 
