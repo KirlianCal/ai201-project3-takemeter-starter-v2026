@@ -39,20 +39,13 @@
 
 ## What This Does
 
-<!-- Your community, and what your classifier sorts posts into. Three or four
-     sentences. -->
+This project classifies posts from the VWVortex MK6 Golf/GTI subforum (public, readable without a login). TakeMeter sorts each post by what it is doing: asking for help (`help_request`), reporting what happened or how the author feels about their car (`experience`), giving instructions for others to follow (`how_to`), or advertising a product the author is selling (`for_sale`).
 
-This project classifies posts from the VWVortex MK6 Golf/GTI subforum (public, readable without a login). TakeMeter sorts each post by what it is doing: asking for help, reporting something the author did, or giving instructions for others to follow. The draft labels are `help_request`, `experience`, and `how_to`, and they may change after Milestone 2.
+**Stretch feature:** a fourth label, `for_sale`, because the subforum has a classifieds section and vendor promo posts that none of the other three labels fit.
 
 ---
 
 ## Label Taxonomy
-
-<!-- Each label: a one-sentence definition and two real examples from your
-     reading. Then your decision rule for the hardest boundary.
-
-     The decision rule is worth a point on its own and it's the thing most
-     people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
 ### `help_request`
 
@@ -96,16 +89,7 @@ The author gives instructions a reader could follow to install, replace, adjust,
 **Example 2:**
 > The only adjustment I could find was a white hex adjuster on the topside of each light. [...] Turning this gold screw counter clockwise will raise the beam higher.
 
-### The hardest boundary
-
-**Which two labels:** `experience` and `how_to`
-
-**The decision rule I used every time:**
-1. If the post's main purpose is to get an answer or opinion from others, it's `help_request`, even if it also describes what the author did.
-2. Otherwise, if it contains instructions a reader could follow, it's `how_to`, even if the author also says how they felt.
-3. Otherwise, if it mostly shares how the author felt about the product or job, it's `experience`.
-
-### `for_sale`
+### `for_sale` (stretch label)
 
 **Definition:**
 The author is advertising a product they are selling.
@@ -116,97 +100,109 @@ The author is advertising a product they are selling.
 **Example 2:**
 > Garage Clean-out Free Parts in MA. All from a 2012 Golf TDI 4Dr; cleaning out my garage. Local pickup only, absolutely no shipping! ... Brand new Curt tow hitch with ball mount and ball ...
 
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+### The hardest boundary
 
+**Which two labels:** `experience` and `how_to`
+
+**The decision rule I used every time (checked in this order):**
+0. If the author is advertising a product they are selling, it's `for_sale`. A post by someone trying to buy a part is not `for_sale`; it's `help_request`.
+1. Otherwise, if the post's main purpose is to get an answer or opinion from others, it's `help_request`, even if it also describes what the author did.
+2. Otherwise, if it contains instructions a reader could follow, it's `how_to`, even if the author also says how they felt.
+3. Otherwise, if it mostly shares what happened or how the author felt about the product or job, it's `experience`.
 
 ---
 
 ## The Dataset
 
-<!-- Where you collected from, how you labelled, your counts, and three hard
-     cases. -->
+**Where the posts came from:** Public threads in the VWVortex MK6 Golf/GTI subforum, copied by hand. This includes the classifieds/for-sale threads and vendor promotion posts. I limited the data to MK6 cars; a Tiguan post that slipped in was removed.
 
-**Where the posts came from:**
+**Departure from "keep whole posts":** The rows in `labels.csv` are verbatim excerpts, not whole posts: the title plus the key sentences, with long quoted replies, signatures and image captions cut. The model reads only the first 128 tokens (about 90 words) of each post anyway, so full posts would have been cut off at training time regardless. No wording was rewritten; sentences were only left out.
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How many I got and why:** 152 rows, under the 200 target. I used the project's stop rule: I stopped collecting and labeled what I had rather than rush 50 more.
+
+**How I labeled them:** 21 rows were labeled cold (no AI help, just my definitions) and are marked `cold` in the note column. Other rows were labeled with AI help; see "Pre-labelling disclosure" under How I Used AI.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| `help_request` | 91 | 59.9% |
+| `experience` | 26 | 17.1% |
+| `for_sale` | 20 | 13.2% |
+| `how_to` | 15 | 9.9% |
+| **Total** | 152 | 100% |
+
+The largest label is under the 70% cap, but `help_request` is still about 60% of the data, so a model that guessed it every time would score about 60%.
 
 **Three hard cases**
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
-
 **1.**
-> *The post:*
+> *The post:* "Osram lamp module. Hi, I'm from Poland. The module in my Golf 6 with Osram headlights has burned out. I can't find it in Poland. Does anyone have one for sale or know where to buy one?"
 >
-> *Could have been:*
+> *Could have been:* `for_sale` or `help_request`
 >
-> *I chose, because:*
+> *I chose `help_request`, because:* the words "for sale" appear, but the author is the buyer asking where to find a part. Nobody is advertising a product. This is why rule 0 says "selling", not "mentions sales". A second post, "Roof Rack Pieces" (looking for clamping parts, "Is anyone selling these pieces?"), got the same call.
 
 **2.**
-> *The post:*
+> *The post:* "Sabotage?. I've had this shop, look at my MK6 GTI twice now, they did my water pump and valve cover gasket... fuel trims are +40% right now at idle... Do I just sell the car?"
 >
-> *Could have been:*
+> *Could have been:* `experience` or `help_request`
 >
-> *I chose, because:*
+> *I chose `help_request`, because:* most of the post tells a story about what happened with the shop, but it ends with direct questions about what to do next. Rule 1 says the main purpose decides, and the purpose is to get advice.
 
 **3.**
-> *The post:*
+> *The post:* "Just did the climatronic retrofit on my MK6 GTI. Everything works except Dual zone. Very easy to do, shouldn't take more than a few hours. ... If anyone has questions feel free to ask"
 >
-> *Could have been:*
+> *Could have been:* `experience` or `how_to`
 >
-> *I chose, because:*
+> *I chose `experience` (labeled cold), because:* the author says it was easy and reports what worked, but never gives steps a reader could follow. It's how the job went, not how to do it. This is the `experience` / `how_to` boundary my decision rule is built around.
 
 ---
 
 ## The Training Run
 
-<!-- Your starting model, your settings, and anything you changed and why. -->
+**Base model:** `distilbert-base-uncased`
 
-**Base model:** TODO — read it from section 2 of `takemeter.ipynb`
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, 128 tokens per post, seed 42.
 
-**Settings:** 3 epochs, learning rate 2e-5, batch size 16, 128 tokens per post, seed TODO (check section 2 of the notebook). Update this line if I change any of them.
+**Hardware:** CPU only (PyTorch 2.14.1+cpu), Python 3.13.7 on Windows, 15.6 GB RAM. Training took under a minute.
 
-**Hardware:** CPU only (PyTorch 2.14.1+cpu), Python 3.13.7 on Windows, 15.6 GB RAM
+**Anything I changed from the defaults, and why:** Nothing.
 
-**Anything I changed from the defaults, and why:** TODO after Milestone 5 (or "Nothing")
+**Split sizes:** 106 train / 23 validation / 23 test (stratified 70/15/15).
 
-**Split sizes:** TODO after running section 3 of the notebook — train / val / test, plus per-label counts in the test split. If a label had fewer than about 8 in test, say so.
+| Label | Train | Val | Test |
+|---|---|---|---|
+| `help_request` | 63 | 14 | 14 |
+| `experience` | 18 | 4 | 4 |
+| `how_to` | 11 | 2 | 2 |
+| `for_sale` | 14 | 3 | 3 |
+
+Three labels have fewer than 8 examples in the test split (`experience` 4, `how_to` 2, `for_sale` 3), so their metrics will jump around between seeds.
+
+**What the run produced:** `results.json` and `test_split.csv` are committed. On the 23 test posts, accuracy was 0.609 and macro F1 was 0.189. Per-label F1 was 0.757 for `help_request` and 0.000 for the other three, which looks like the model predicting `help_request` for almost every post. I'm saving the diagnosis for next unit.
 
 ---
 
 ## How I Used AI
 
-<!-- Two specific moments — what you asked, what came back, what you changed.
-
-     ⚠️ Plus disclosure of any pre-labelling. If you had a model pre-label a
-     batch and then read and corrected every one, say that. It's an allowed
-     workflow and disclosing it costs you nothing. Not disclosing it is the
-     problem. -->
-
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I pasted forum posts and attachments and asked Claude to turn each into a `labels.csv` row: the title plus the key sentences, verbatim, with a one-line note.
+- *What came back:* Rows with proposed labels and notes, and flags on posts that sat on a boundary.
+- *What I changed:* I corrected it where I disagreed. I told Claude to remove a non-MK6 (Tiguan) post, and for several batches I supplied the label myself (`help_request`, `how_to`, `experience`) instead of using its guess.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Help when the notebook failed to load `labels.csv` (`EmptyDataError`) even though the file loaded fine from the terminal.
+- *What came back:* A diagnostic cell to print the working directory and file size, and a suggestion to point the notebook at the file's full path.
+- *What I changed:* I ran the diagnostic and set `CSV` to the full path. That loaded all 152 rows and the run went through.
 
 **Pre-labelling disclosure:**
+- 21 rows were labeled cold by me, with no AI help, and are marked `cold` in the note column (experience 10, how_to 6, for_sale 3, help_request 2).
+- Claude built every row's text as an excerpt from posts I supplied, and proposed a label for the rows where I did not state one. 
+- For the rest, I gave the label for each batch myself.
+- I read through the file but did not independently re-derive every AI-proposed label, so some of those rows may carry its judgment calls.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
