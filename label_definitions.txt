@@ -1,10 +1,9 @@
 # Your label definitions, one per line, as `label: definition`.
 #
-# Copy these from your README so the baseline is judged on exactly the
-# definitions you wrote. baseline.py reads this file.
-#
-# Delete the examples below and put yours in.
+# Copied from my README so the baseline is judged on exactly the
+# definitions I wrote. baseline.py reads this file.
 
-analysis: makes an argument backed by a specific, checkable fact
-hot_take: a confident claim with no support offered
-reaction: an immediate response to something that just happened
+help_request: the author's main purpose is to get an answer, diagnosis, or opinion from other readers about their MK6 Golf/GTI
+experience: the author describes what happened to them or how they feel about their car, with no instructions for the reader to follow and no question as the main point
+how_to: the author gives step-by-step instructions or a procedure that a reader could follow to do a job on their own car
+for_sale: the author is advertising a product that they are selling
