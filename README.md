@@ -204,6 +204,12 @@ Three labels have fewer than 8 examples in the test split (`experience` 4, `how_
 - For the rest, I gave the label for each batch myself.
 - I read through the file but did not independently re-derive every AI-proposed label, so some of those rows may carry its judgment calls.
 
+**Moment 3**
+
+- *What I asked for:* Help reading my confusion matrices and per-label results, and picking the one change to make for the improvement run.
+- *What came back:* An explanation that my first model was predicting only `help_request` because it had too few training steps, and a suggestion to raise epochs from 3 to 10.
+- *What I changed:* I made only that one change, re-ran all three seeds, and wrote the verdicts myself from `results_three_seeds_after.json`.
+
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
      Don't fill these in during unit 5.
@@ -306,38 +312,53 @@ There were none, so there is nothing to sort into piles (a), (b) or (c).
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** One training setting: epochs, from 3 to 10. Nothing else changed ( i.e. same labels, same data, same learning rate 2e-5, batch size 16, 128 tokens, same three seeds 42, 7 and 2024).
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** The diagnosis for criteria 1 and 2 was that the model was undertrained: it made only about 21 updates in 3 epochs, training loss was still falling, and it predicted `help_request` for every post. More epochs targets that problem directly.
 
 ### Run Log — After
 
-| Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+Three seeds (42, 7, 2024), CPU, PyTorch 2.14.1+cpu, base model `distilbert-base-uncased`, **10 epochs**, learning rate 2e-5, batch size 16, 128 tokens. Results saved in `results_three_seeds_after.json`.
 
-**Did it help, and how do I know:**
+| Criterion           | Target                                                       | Seed 42                  | Seed 7                  | Seed 2024                  | Verdict      |
+|---------------------|--------------------------------------------------------------|--------------------------|-------------------------|----------------------------|--------------|
+| 1. Overall accuracy | ≥ 0.70 on every seed                                         | 0.652                    | 0.826                   | 0.913                      | MISSED       |
+| 2. Per-label F1     | ≥ 0.55 for all four labels, every seed                       | lowest 0.000 (2 labels)  | lowest 0.000 (1 label)  | lowest 0.667 (`experience`)| MISSED       |
+| 3. Balance          | no label > 65% of the dataset                                | 59.9%                    | 59.9%                   | 59.9%                      | MET          |
+| 4. Seed consistency | accuracy spread ≤ 0.10                                       | 0.652                    | 0.826                   | 0.913 (spread 0.261)       | MISSED       |
+| 5. Confidence       | ≥ 80% correct at confidence ≥ 0.80, ≥ 5 predictions per seed | not measured             | not measured            | not measured               | NOT MEASURED |
 
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
+Per-label F1 after the change:
 
+| Label          | Seed 42 | Seed 7 | Seed 2024 |
+|----------------|---------|--------|-----------|
+| `help_request` | 0.778   | 0.875  | 0.933     |
+| `experience`   | 0.000   | 0.000  | 0.667     |
+| `how_to`       | 0.667   | 1.000  | 1.000     |
+| `for_sale`     | 0.000   | 1.000  | 1.000     |
+| Macro F1       | 0.361   | 0.719  | 0.900     |
 
+Confusion matrix, seed 2024 (the best seed). Rows are true labels, columns are guesses:
+
+| true \ predicted | help_request | experience | how_to | for_sale |
+|------------------|--------------|------------|--------|----------|
+| **help_request** | 14           | 0          | 0      | 0        |
+| **experience**   | 2            | 2          | 0      | 0        |
+| **how_to**       | 0            | 0          | 2      | 0        |
+| **for_sale**     | 0            | 0          | 0      | 3        |
+
+**Did it help, and how do I know:** Yes, but not enough to meet my own targets. Accuracy rose on all three seeds (0.609 before; 0.652, 0.826 and 0.913 after) and macro F1 rose from 0.189 to 0.361, 0.719 and 0.900. Validation loss at the end of training also fell, from 1.05–1.12 to 0.49–0.71. On seeds 7 and 2024 the model now gets `how_to` and `for_sale` right. Results depends heavily on the seed: seed 42 barely moved off "always `help_request`", and the spread across seeds went from 0.000 (fake stable) to 0.261, well over my own 0.10 target. Criteria 1, 2 and 4 are still missed. All numbers come from a 23-post test split with 2 to 4 posts per minority label, so each per-label number can move by a lot from one post.
 
 ---
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped. -->
+- **Criterion 1 (accuracy ≥ 0.70 on every seed):** Seed 42 is still 0.652. I would try a higher learning rate or more epochs, and add training examples. Unit allows for one change.
+- **Criterion 2 (every label F1 ≥ 0.55):** `experience` is the problem label: F1 0.000, 0.000 and 0.667. I would add more `experience` examples (18 in training) and re-check my labels on that boundary.
+- **Criterion 4 (spread ≤ 0.10):** The spread of 0.261 probably says that 106 training posts and a 23-post test split are too small for a stable measure. I would collect more data and use a larger test split.
+- **Criterion 5 (confidence):** Not measured for the improvement run, so there is no verdict. I would run the confidence check on the new models.
 
-
-
-**The gap between what I meant my labels to capture and what the model
-learned:**
-<!-- Two sentences. Your confusion matrix is the evidence. -->
+**The gap between what I meant my labels to capture and what the model learned:** I meant `experience` to capture posts that report what happened or how the author felt about something, importantly without a question or instructions, but the model for the most part treats them as `help_request`: across the three seeds, 10 of the 12 `experience` test posts were called `help_request`, and no `help_request` post was called `experience`. So it has not learned the difference between a post that tells about a story or experince and one that asks for advice, and the matrix cannot say whether that is too few examples (18 in training) or inconsistent labeling at that boundary.
 
 
 
